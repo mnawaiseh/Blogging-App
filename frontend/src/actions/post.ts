@@ -1,73 +1,109 @@
-'use server'
+"use server";
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath } from "next/cache";
 import axios from "axios";
+import { cookies } from "next/headers";
 
-export const getPosts = async (token: string): Promise<any> => {
-    const res = await axios.get('http://backend:4000/api/posts', {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    }).catch((err) => {
-        console.log(err);
+export async function getPosts(): Promise<any> {
+  const cookieStore = cookies();
+  const storedToken = cookieStore.get("token")?.value;
+
+  if (!storedToken) {
+    throw new Error("Not authenticated");
+  }
+
+  try {
+    const res = await axios.get("http://backend:4000/api/posts", {
+      headers: {
+        Authorization: `Bearer ${storedToken}`,
+      },
     });
-
-    return res;
+    return res.data;
+  } catch (err) {
+    console.error("Failed to fetch posts", err);
+    return [];
+  }
 }
 
-export const deletePost = async (postId: number, token: string) => {
-    try {
-        await axios.delete(`http://backend:4000/api/posts/${postId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        revalidatePath("/")
-    } catch (error) {
-        console.error('Failed to delete post', error);
-    }
-};
+export async function deletePost(postId: number) {
+  const cookieStore = cookies();
+  const storedToken = cookieStore.get("token")?.value;
 
+  if (!storedToken) {
+    throw new Error("Not authenticated");
+  }
 
-export const addComment = async (postId: number, comment: string, token: string) => {
-    try {
-        const res = await axios.post(
-            `http://backend:4000/api/posts/${postId}/comments`,
-            { content: comment },
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        revalidatePath("/")
-    } catch (error) {
-        console.error("Failed to add comment", error);
-    }
-};
+  try {
+    await axios.delete(`http://backend:4000/api/posts/${postId}`, {
+      headers: { Authorization: `Bearer ${storedToken}` },
+    });
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Failed to delete post", error);
+  }
+}
 
-export const removeComment = async (postId: number, commentId: number, token: string) => {
-    try {
-        await axios.delete(
-            `http://backend:4000/api/posts/${postId}/comments/${commentId}`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        revalidatePath("/")
-    } catch (error) {
-        console.error("Failed to delete comment", error);
-    }
-};
+export async function addComment(postId: number, comment: string) {
+  const cookieStore = cookies();
+  const storedToken = cookieStore.get("token")?.value;
 
+  if (!storedToken) {
+    throw new Error("Not authenticated");
+  }
 
-export const toggleLike = async (postId: number, token: string) => {
-    try {
-        const res = await axios.post(
-            `http://backend:4000/api/posts/${postId}/like`,
-            {},
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        revalidatePath("/")
-    } catch (error) {
-        console.error("Failed to toggle like", error);
-    }
-};
+  try {
+    await axios.post(
+      `http://backend:4000/api/posts/${postId}/comments`,
+      { content: comment },
+      {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      }
+    );
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Failed to add comment", error);
+  }
+}
+
+export async function removeComment(postId: number, commentId: number) {
+  const cookieStore = cookies();
+  const storedToken = cookieStore.get("token")?.value;
+
+  if (!storedToken) {
+    throw new Error("Not authenticated");
+  }
+
+  try {
+    await axios.delete(
+      `http://backend:4000/api/posts/${postId}/comments/${commentId}`,
+      {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      }
+    );
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Failed to delete comment", error);
+  }
+}
+
+export async function toggleLike(postId: number) {
+  const cookieStore = cookies();
+  const storedToken = cookieStore.get("token")?.value;
+
+  if (!storedToken) {
+    throw new Error("Not authenticated");
+  }
+
+  try {
+    await axios.post(
+      `http://backend:4000/api/posts/${postId}/like`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      }
+    );
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Failed to toggle like", error);
+  }
+}

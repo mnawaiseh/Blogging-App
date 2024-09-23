@@ -30,8 +30,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       cookies().set("userId", res.data.user.id);
       redirect("/");
     } catch (err) {
-      console.log("err:", err);
-      // setError('Authentication failed because : ' + err);
+      console.error("err:", err);
     }
   };
 
@@ -56,7 +55,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
             className="text-black text-black border p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
-          {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300"
