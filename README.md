@@ -1,4 +1,4 @@
-# Blogs App - Fullstack Application
+# Blogging-App - Fullstack Application
 
 This project is a fullstack application built using **Next.js** for the frontend and **Node.js** with **Express** and **Prisma** for the backend. The frontend and backend communicate seamlessly to provide a platform where users can log in, create posts, engage with content through likes and comments, and perform other blogging functionalities.
 
