@@ -1,0 +1,17 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install packages
+        run: npm ci
+      - name: Run ESLint
+        run: npx run lint
