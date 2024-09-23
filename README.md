@@ -17,7 +17,7 @@ Before running the project, make sure you have the following installed:
 1. Clone the repository:
 
    ```bash
-   git clone git@github.com:mnawaiseh/Blogs-App.git
+   git clone git@github.com:mnawaiseh/Blogging-App.git
    cd blogging-app
    ```
 
